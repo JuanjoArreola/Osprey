@@ -8,35 +8,35 @@
 import Foundation
 
 public protocol BaseAPI {
-    static var baseURL: String { get }
+    var baseURL: String { get }
 }
 
 public extension BaseAPI {
     func get(endpoint: String) -> Route {
-        return Route.get(Self.baseURL + endpoint)
+        return Route.get(baseURL + endpoint)
     }
 
     func post(endpoint: String) -> Route {
-        return Route.post(Self.baseURL + endpoint)
+        return Route.post(baseURL + endpoint)
     }
     
     func put(endpoint: String) -> Route {
-        return Route.put(Self.baseURL + endpoint)
+        return Route.put(baseURL + endpoint)
     }
     
     func delete(endpoint: String) -> Route {
-        return Route.delete(Self.baseURL + endpoint)
+        return Route.delete(baseURL + endpoint)
     }
     
     func head(endpoint: String) -> Route {
-        return Route.head(Self.baseURL + endpoint)
+        return Route.head(baseURL + endpoint)
     }
     
     func patch(endpoint: String) -> Route {
-        return Route.patch(Self.baseURL + endpoint)
+        return Route.patch(baseURL + endpoint)
     }
     
     func options(endpoint: String) -> Route {
-        return Route.options(Self.baseURL + endpoint)
+        return Route.options(baseURL + endpoint)
     }
 }
