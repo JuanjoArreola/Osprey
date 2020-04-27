@@ -2,6 +2,9 @@
 
 Networking for Swift 5.
 
+[![GitHub license](https://img.shields.io/github/license/JuanjoArreola/Osprey)](https://github.com/JuanjoArreola/Osprey/blob/master/LICENSE)
+[![codebeat badge](https://codebeat.co/badges/a1b06f95-e950-402f-a0fc-0235813e15c5)](https://codebeat.co/projects/github-com-juanjoarreola-osprey-master)
+
 A Library to connect to APIs built on top of URLSession.
 
 #### Features:
