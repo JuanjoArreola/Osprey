@@ -11,7 +11,7 @@ let package = Package(
             targets: ["Osprey"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/JuanjoArreola/ShallowPromises", from: "0.7.0")
+        .package(url: "https://github.com/JuanjoArreola/ShallowPromises", from: "0.7.1")
     ],
     targets: [
         .target(

@@ -101,7 +101,7 @@ If the API has a base URL, the API Client can conform to the `BaseAPI` protocol 
 
 ```swift
 class ProductsAPI: AbstractAPI, BaseAPI {
-    static var baseURL = "https://myapi"
+    var baseURL = "https://myapi"
     
     func requestProducts() -> Promise<[Product]> {
         return request(route: get(endpoint: "/products"))
@@ -141,7 +141,7 @@ func addProduct(_ product: Product) -> Promise<Product> {
 
 ```swift
 func addPicture(_ data: Data, to product: Product) -> Promise<Picture> {
-    let part = Part(mimeType: .png, name: "picture", filename: UUID().uuidString, data: data)
+    let part = Part(mimeType: .png, data: data, attributes: ["name": "picture", "filename": UUID().uuidString])
     let params = MultipartParameters(parts: [part])
     return request(route: patch(endpoint: "/products/\(product.id)/"), parameters: params)
 }

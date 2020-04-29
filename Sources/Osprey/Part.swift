@@ -9,29 +9,33 @@ import Foundation
 
 open class Part {
     var type: String
-    var name: String
-    var filename: String
-    var data: Data
+    var data: Data?
+    var attributes: [String: Any]?
     
-    public init(type: String, name: String, filename: String, data: Data) {
+    public init(type: String, data: Data?, attributes: [String: Any]?) {
         self.type = type
-        self.name = name
-        self.filename = filename
         self.data = data
+        self.attributes = attributes
     }
     
-    public convenience init(mimeType type: MimeType, name: String, filename: String, data: Data) {
-        self.init(type: type.rawValue, name: name, filename: filename, data: data)
+    public convenience init(mimeType type: MimeType, data: Data, attributes: [String: Any]?) {
+        self.init(type: type.rawValue, data: data, attributes: attributes)
     }
     
     func encode(withBoundary boundary: String) throws -> Data {
+        guard let data = data else {
+            throw MultipartError.emptyData
+        }
         var content = Data()
-        try content.append(string: "--\(boundary)\r\n")
-        try content.append(string: "Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(filename)\"\r\n")
-        try content.append(string: "Content-Type: \(type)\r\n\r\n")
+        try content.append("--\(boundary)\r\n")
+        
+        var disposition = ["Content-Disposition: form-data"]
+        disposition.append(contentsOf: attributes?.map({ "\($0.key)=\"\($0.value)\"" }) ?? [])
+        try content.append(disposition.joined(separator: "; "))
+        
+        try content.append("Content-Type: \(type)\r\n\r\n")
         content.append(data)
-        try content.append(string: "\r\n")
-        return content
+        return try content.append("\r\n")
     }
 }
 
@@ -47,14 +51,17 @@ public enum MimeType: String {
 }
 
 extension Data {
-    mutating func append(string: String) throws {
+    @discardableResult
+    mutating func append(_ string: String) throws -> Self {
         guard let data = string.data(using: .utf8) else {
             throw MultipartError.dataEncoding
         }
         append(data)
+        return self
     }
 }
 
 public enum MultipartError: Error {
     case dataEncoding
+    case emptyData
 }

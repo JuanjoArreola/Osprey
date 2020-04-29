@@ -9,7 +9,7 @@ import Foundation
 
 public protocol RequestParameters {
     var urlParameters: [String: Any]? { get }
-    var headers: [String: String] { get }
+    var headers: [String: String] { get set }
     func getData() throws -> Data?
     
     func preprocess() throws

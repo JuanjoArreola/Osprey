@@ -26,29 +26,29 @@ open class AbstractAPI: BaseRepository {
         let promise = Promise<T>()
         processingQueue.async {
             do {
-                promise.littlePromise = try self.request(route: route, parameters: parameters, completion: { (data, response, error) in
-                    self.parseData(data, response: response, error: error, promise: promise)
-                })
+                promise.littlePromise = try self.request(route: route, parameters: parameters,
+                                                         completion: self.parseClosure(for: promise))
             } catch {
                 promise.complete(with: error, in: self.responseQueue)
             }
         }
-        
         return promise
     }
     
-    func parseData<T: Decodable>(_ data: Data?, response: URLResponse?, error: Error?, promise: Promise<T>) {
-        do {
-            if let error = try parseError(data: data, response: response, error: error) {
-                promise.complete(with: error, in: responseQueue)
-            } else if let data = data {
-                let result: T = try responseParser.getInstance(from: data, response: response)
-                promise.fulfill(with: result, in: responseQueue)
-            } else {
-                promise.complete(with: ResponseError.emptyResponse, in: responseQueue)
+    func parseClosure<T: Decodable>(for promise: Promise<T>) -> ((Data?, URLResponse?, Error?) -> Void) {
+        return { (data, response, error) in
+            do {
+                if let error = try self.parseError(data: data, response: response, error: error) {
+                    promise.complete(with: error, in: self.responseQueue)
+                } else if let data = data {
+                    let result: T = try self.responseParser.getInstance(from: data, response: response)
+                    promise.fulfill(with: result, in: self.responseQueue)
+                } else {
+                    promise.complete(with: ResponseError.emptyResponse, in: self.responseQueue)
+                }
+            } catch {
+                promise.complete(with: error, in: self.responseQueue)
             }
-        } catch {
-            promise.complete(with: error, in: responseQueue)
         }
     }
     
@@ -58,10 +58,10 @@ open class AbstractAPI: BaseRepository {
         if let error = error {
             return error
         }
-        if let data = data, let error = try responseParser.getError(from: data, response: response) {
-            return error
-        }
-        if let code = (response as? HTTPURLResponse)?.statusCode, code >= 400, code < 600 {
+        if let code = (response as? HTTPURLResponse)?.statusCode, !(200..<400).contains(code) {
+            if let data = data, let error = try responseParser.getError(from: data, response: response) {
+                return error
+            }
             if let error = parseError(code: code, data: data, response: response) {
                 return error
             }
