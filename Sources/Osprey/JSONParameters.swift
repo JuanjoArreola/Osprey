@@ -14,8 +14,8 @@ open class JSONParameters: URLParameters {
     private var dataClosure: (() throws -> Data)?
     public var data: Data?
     
-    public init<T: Encodable>(_ body: T, headers: [String: String] = [:]) {
-        super.init(headers: headers)
+    public convenience init<T: Encodable>(_ body: T, headers: [String: String] = [:]) {
+        self.init(headers: headers)
         
         self.dataClosure = { return try JSONParameters.encoder.encode(body) }
         self.headers["Content-Type"] = "application/json"
