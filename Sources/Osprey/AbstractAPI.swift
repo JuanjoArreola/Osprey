@@ -26,6 +26,7 @@ open class AbstractAPI: BaseRepository {
         let promise = Promise<T>()
         processingQueue.async {
             do {
+                try self.preprecess()
                 promise.littlePromise = try self.request(route: route, parameters: parameters,
                                                          completion: self.parseClosure(for: promise))
             } catch {
@@ -81,4 +82,6 @@ open class AbstractAPI: BaseRepository {
             return nil
         }
     }
+    
+    open func preprecess() throws {}
 }
