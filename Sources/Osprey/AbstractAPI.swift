@@ -83,5 +83,9 @@ open class AbstractAPI: BaseRepository {
         }
     }
     
-    open func preprecess(route: Route, parameters: RequestParameters? = nil) throws {}
+    open func preprecess(route: Route, parameters: RequestParameters? = nil) throws {
+        if var params = parameters, let header = responseParser.acceptHeader {
+            params.headers["Accept"] = header
+        }
+    }
 }

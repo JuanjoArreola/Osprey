@@ -14,11 +14,12 @@ open class JSONParameters: URLParameters {
     private var dataClosure: (() throws -> Data)?
     public var data: Data?
     
-    public convenience init<T: Encodable>(_ body: T, headers: [String: String] = [:]) {
+    public convenience init<T: Encodable>(_ body: T, headers: [String: String] = [:], authenticate: Bool = false) {
         self.init(headers: headers)
         
         self.dataClosure = { return try JSONParameters.encoder.encode(body) }
         self.headers["Content-Type"] = "application/json"
+        self.requiresAuthentication = authenticate
     }
     
     public override func getData() throws -> Data? {

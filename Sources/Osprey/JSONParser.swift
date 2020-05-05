@@ -8,6 +8,10 @@
 import Foundation
 
 open class JSONParser: ResponseParser {
+    public var acceptHeader: String? {
+        return "application/json"
+    }
+    
     public let decoder = JSONDecoder()
     private let formatter = DateFormatter()
     

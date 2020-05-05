@@ -15,12 +15,13 @@ open class MultipartParameters: URLParameters {
     public var parts: [Part]?
     public var partParameters: [String: Any]?
     
-    public init(parts: [Part], parameters: [String: Any]? = nil, headers: [String: String] = [:]) {
+    public init(parts: [Part], parameters: [String: Any]? = nil, headers: [String: String] = [:], authenticate: Bool = false) {
         super.init(headers: headers)
         
         self.parts = parts
         self.partParameters = parameters
         self.headers["Content-Type"] = "multipart/form-data; boundary=\(boundary ?? MultipartParameters.boundary)"
+        self.requiresAuthentication = authenticate
     }
     
     public override func getData() throws -> Data? {
