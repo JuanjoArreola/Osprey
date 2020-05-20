@@ -31,8 +31,7 @@ open class Part {
         
         var disposition = ["Content-Disposition: form-data"]
         disposition.append(contentsOf: attributes?.map({ "\($0.key)=\"\($0.value)\"" }) ?? [])
-        try content.append(disposition.joined(separator: "; "))
-        
+        try content.append("\(disposition.joined(separator: "; "))\r\n")
         try content.append("Content-Type: \(type)\r\n\r\n")
         content.append(data)
         return try content.append("\r\n")
