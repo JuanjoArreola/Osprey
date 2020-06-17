@@ -22,7 +22,7 @@ open class AbstractAPI: BaseRepository {
         super.init()
     }
     
-    open func request<T: Decodable>(route: Route, parameters: RequestParameters? = nil) -> Promise<T> {
+    open func request<T: Decodable, P: RequestParameters>(route: Route, parameters: P? = nil) -> Promise<T> {
         let promise = Promise<T>()
         processingQueue.async {
             do {
