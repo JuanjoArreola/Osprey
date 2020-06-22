@@ -21,7 +21,6 @@ open class MultipartParameters: URLParameters {
         self.parts = parts
         self.partParameters = parameters
         self.headers["Content-Type"] = "multipart/form-data; boundary=\(boundary ?? MultipartParameters.boundary)"
-        self.requiresAuthentication = authenticate
     }
     
     public override func getData() throws -> Data? {
