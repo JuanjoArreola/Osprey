@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol RequestParameters {
+public protocol RequestParameters: class {
     var urlParameters: [String: Any]? { get }
     var headers: [String: String] { get set }
     var requiresAuthentication: Bool { get }

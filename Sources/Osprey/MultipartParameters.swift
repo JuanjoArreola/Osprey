@@ -15,7 +15,7 @@ open class MultipartParameters: URLParameters {
     public var parts: [Part]?
     public var partParameters: [String: Any]?
     
-    public init(parts: [Part], parameters: [String: Any]? = nil, headers: [String: String] = [:], authenticate: Bool = false) {
+    public init(parts: [Part], parameters: [String: Any]? = nil, headers: [String: String] = [:]) {
         super.init(headers: headers)
         
         self.parts = parts

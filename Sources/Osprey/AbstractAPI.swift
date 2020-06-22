@@ -22,7 +22,7 @@ open class AbstractAPI: BaseRepository {
         super.init()
     }
     
-    open func request<T: Decodable, P: RequestParameters>(route: Route, parameters: P? = nil) -> Promise<T> {
+    open func request<T: Decodable>(route: Route, parameters: RequestParameters? = nil) -> Promise<T> {
         let promise = Promise<T>()
         processingQueue.async {
             do {
@@ -83,8 +83,8 @@ open class AbstractAPI: BaseRepository {
         }
     }
     
-    open func preprocess<P: RequestParameters>(route: Route, parameters: P? = nil) throws {
-        if var params = parameters, let header = responseParser.acceptHeader {
+    open func preprocess(route: Route, parameters: RequestParameters? = nil) throws {
+        if let params = parameters, let header = responseParser.acceptHeader {
             params.headers["Accept"] = header
         }
     }
