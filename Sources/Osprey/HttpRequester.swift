@@ -1,13 +1,13 @@
 //
-//  BaseRepository.swift
+//  HttpRequester.swift
 //  Osprey
 //
-//  Created by JuanJo on 21/04/20.
+//  Created by JuanJo on 22/06/20.
 //
 
 import Foundation
 
-open class BaseRepository {
+open class HttpRequester {
     open var cachePolicy: URLRequest.CachePolicy?
     open var timeoutInterval: TimeInterval?
     open var allowsCellularAccess: Bool?

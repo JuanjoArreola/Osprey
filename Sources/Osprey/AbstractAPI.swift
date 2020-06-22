@@ -12,14 +12,14 @@ extension URLSessionDataTask: Cancellable {}
 
 private let processingQueue = DispatchQueue(label: "com.osprey.ProcessingQueue", attributes: .concurrent)
 
-open class AbstractAPI: BaseRepository {
+open class AbstractAPI {
     
     public let responseParser: ResponseParser
     open var responseQueue = DispatchQueue.main
+    var requester = HttpRequester()
     
     public init(responseParser: ResponseParser) {
         self.responseParser = responseParser
-        super.init()
     }
     
     open func request<T: Decodable>(route: Route, parameters: RequestParameters? = nil) -> Promise<T> {
@@ -27,7 +27,7 @@ open class AbstractAPI: BaseRepository {
         processingQueue.async {
             do {
                 try self.preprocess(route: route, parameters: parameters)
-                promise.littlePromise = try self.request(route: route, parameters: parameters,
+                promise.littlePromise = try self.requester.request(route: route, parameters: parameters,
                                                          completion: self.parseClosure(for: promise))
             } catch {
                 promise.complete(with: error, in: self.responseQueue)
