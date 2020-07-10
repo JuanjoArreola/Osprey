@@ -18,7 +18,7 @@ public extension Route {
 }
 
 public extension URL {
-    func appending(parameters: [String: Any]) throws -> URL {
+    func appending(parameters: URLQueryStringConvertible) throws -> URL {
         guard let queryString = parameters.urlQueryString,
               var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
             throw RepositoryError.encodingError
@@ -32,8 +32,12 @@ public extension URL {
     }
 }
 
-public extension Dictionary where Key: ExpressibleByStringLiteral {
-    var urlQueryString: String? {
+public protocol URLQueryStringConvertible {
+    var urlQueryString: String? { get }
+}
+
+extension Dictionary: URLQueryStringConvertible where Key: CustomStringConvertible {
+    public var urlQueryString: String? {
         let string = self.map({ "\($0)=\(String(describing: $1))" }).joined(separator: "&")
         return string.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
     }
