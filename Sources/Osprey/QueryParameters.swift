@@ -8,7 +8,7 @@
 import Foundation
 
 public struct QueryParameters: URLQueryStringConvertible {
-    private var array = [URLQueryStringConvertible]()
+    public var array = [URLQueryStringConvertible]()
     
     public init(_ elements: URLQueryStringConvertible?...) {
         array.append(contentsOf: elements.compactMap({ $0 }))
