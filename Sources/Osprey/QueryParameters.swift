@@ -26,7 +26,7 @@ public struct QueryParameters: URLQueryStringConvertible {
         }
     }
     
-    public var urlQueryString: String? {
+    public var urlQueryString: String {
         return array.compactMap({ $0.urlQueryString }).joined(separator: "&")
     }
 }
