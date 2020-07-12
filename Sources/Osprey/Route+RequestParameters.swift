@@ -42,8 +42,8 @@ extension Dictionary: URLQueryStringConvertible where Key: CustomStringConvertib
     }
 }
 
-extension URLQueryStringConvertible where Self: CustomStringConvertible {
-    var urlQueryString: String {
+extension CustomStringConvertible where Self: URLQueryStringConvertible {
+    public var urlQueryString: String {
         return self.description
     }
 }
