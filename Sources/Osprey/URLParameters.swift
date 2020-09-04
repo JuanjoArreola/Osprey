@@ -10,13 +10,13 @@ import Foundation
 open class URLParameters: RequestParameters {
     
     // MARK: -
-    public var urlParameters: URLQueryStringConvertible? = nil
+    public var urlParameters: URLQueryConvertible? = nil
     public var requiresAuthentication: Bool = false
     
     // MARK: - Commmon
     public var headers: [String: String] = [:]
     
-    public init(_ urlParameters: URLQueryStringConvertible? = nil, headers: [String: String] = [:], authenticate: Bool = false) {
+    public init(_ urlParameters: URLQueryConvertible? = nil, headers: [String: String] = [:], authenticate: Bool = false) {
         self.urlParameters = urlParameters
         self.headers = headers
         self.requiresAuthentication = authenticate

@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol RequestParameters: class {
-    var urlParameters: URLQueryStringConvertible? { get }
+    var urlParameters: URLQueryConvertible? { get }
     var headers: [String: String] { get set }
     var requiresAuthentication: Bool { get }
     

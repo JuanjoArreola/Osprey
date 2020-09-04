@@ -118,7 +118,6 @@ func requestProducts() -> Promise<[Product]> {
     let params = URLParameters(["page": 1])
     return request(route: get(endpoint: "/products"), parameters: params)
 }
-}
 ```
 
 #### Encoders
@@ -153,7 +152,7 @@ Headers can be added to every `RequestParameters` instance:
 
 ```swift
 let params = JSONParameters(product, headers: ["Authentication": "Token \(token)"])
-let urlParams = JSONParameters(product, headers: ["Authentication": "Token \(token)"])
+let urlParams = URLParameters(headers: ["Authentication": "Token \(token)"])
 let multipartParams = MultipartParameters(product, headers: ["Authentication": "Token \(token)"])
 ```
 
@@ -183,7 +182,7 @@ usersAPI.requestUser()
 .finally(updateInterface)
 ```
 All this closures are called in the main queue, to change that behaviour you can configure your 
-client setting the ``variable:
+client setting the `responseQueue` variable:
 
 ```swift
 let api = UsersAPI(responseParser: JSONParser())

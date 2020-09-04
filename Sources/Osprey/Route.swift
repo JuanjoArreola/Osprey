@@ -7,6 +7,12 @@
 
 import Foundation
 
+public enum RoutingError: Error {
+    case invalidURL(url: String)
+    case encodingError
+    case invalidURLQuery
+}
+
 public enum Route {
     case get(String)
     case post(String)
@@ -18,13 +24,18 @@ public enum Route {
     
     func getURL() throws -> URL {
         switch self {
-        case .get(let string): return try url(from: string)
-        case .post(let string): return try url(from: string)
-        case .put(let string): return try url(from: string)
-        case .delete(let string): return try url(from: string)
-        case .head(let string): return try url(from: string)
-        case .patch(let string): return try url(from: string)
-        case .options(let string): return try url(from: string)
+        case
+        .get(let string),
+        .post(let string),
+        .put(let string),
+        .delete(let string),
+        .head(let string),
+        .patch(let string),
+        .options(let string):
+            guard let url = URL(string: string) else {
+                throw RoutingError.invalidURL(url: string)
+            }
+            return url
         }
     }
     
@@ -39,17 +50,4 @@ public enum Route {
         case .options: return "OPTIONS"
         }
     }
-    
-    private func url(from string: String) throws -> URL {
-        if let url = URL(string: string) {
-            return url
-        }
-        throw RepositoryError.invalidURL(url: string)
-    }
-}
-
-public enum RepositoryError: Error {
-    case invalidURL(url: String)
-    case encodingError
-    case networkConnection
 }

@@ -18,32 +18,17 @@ public extension Route {
 }
 
 public extension URL {
-    func appending(parameters: URLQueryStringConvertible) throws -> URL {
+    func appending(parameters: URLQueryConvertible) throws -> URL {
         guard var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
-            throw RepositoryError.encodingError
+            throw RoutingError.encodingError
         }
-        let percentEncodedQuery = (components.percentEncodedQuery.map { $0 + "&" } ?? "") + parameters.urlQueryString
-        components.percentEncodedQuery = percentEncodedQuery
+        guard let query = parameters.urlQuery.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+            throw RoutingError.invalidURLQuery
+        }
+        components.percentEncodedQuery = components.percentEncodedQuery?.appending("&" + query) ?? query
         if let url = components.url {
             return url
         }
-        throw RepositoryError.encodingError
-    }
-}
-
-public protocol URLQueryStringConvertible {
-    var urlQueryString: String { get }
-}
-
-extension Dictionary: URLQueryStringConvertible where Key: CustomStringConvertible {
-    public var urlQueryString: String {
-        let string = self.map({ "\($0)=\(String(describing: $1))" }).joined(separator: "&")
-        return string.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-    }
-}
-
-extension CustomStringConvertible where Self: URLQueryStringConvertible {
-    public var urlQueryString: String {
-        return self.description
+        throw RoutingError.encodingError
     }
 }
