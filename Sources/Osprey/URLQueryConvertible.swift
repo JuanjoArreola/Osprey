@@ -38,7 +38,10 @@ public protocol URLQueryValueConvertible {
 
 extension Dictionary: URLQueryConvertible where Key: CustomStringConvertible {
     public var urlQuery: String {
-        return self.map({ "\($0)=\(String(describing: $1))" }).joined(separator: "&")
+        return self.map({
+            let value = ($1 as? URLQueryValueConvertible)?.urlQueryValue ?? String(describing: $1)
+            return "\($0)=\(value)"
+        }).joined(separator: "&")
     }
 }
 
@@ -63,7 +66,7 @@ public struct URLQuery: URLQueryConvertible {
     
     public mutating func add(_ key: String, value: URLQueryValueConvertible?) {
         if let value = value {
-            array.append([key: value])
+            array.append([key: value.urlQueryValue])
         }
     }
     
