@@ -29,14 +29,3 @@ open class JSONParameters: URLParameters {
         return data
     }
 }
-
-public protocol CustomDateEncoding {
-    var dateFormat: String { get }
-    var locale: Locale { get }
-}
-
-public extension CustomDateEncoding {
-    var locale: Locale {
-        return Locale(identifier: "en_US_POSIX")
-    }
-}

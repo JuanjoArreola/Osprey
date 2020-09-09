@@ -20,12 +20,12 @@ open class MultipartParameters: URLParameters {
         
         self.parts = parts
         self.partParameters = parameters
-        self.headers["Content-Type"] = "multipart/form-data; boundary=\(boundary ?? MultipartParameters.boundary)"
+        self.headers["Content-Type"] = "multipart/form-data; boundary=\(boundary ?? Self.boundary)"
     }
     
     public override func getData() throws -> Data? {
         if parts == nil && partParameters == nil { return nil }
-        let boundary = self.boundary ?? MultipartParameters.boundary
+        let boundary = self.boundary ?? Self.boundary
         
         var data = try partParameters?.encode(withBoundary: boundary) ?? Data()
         try parts?.forEach({ data.append(try $0.encode(withBoundary: boundary))})
