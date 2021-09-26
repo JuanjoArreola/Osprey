@@ -23,10 +23,8 @@ class JSONParametersTests: XCTestCase {
     }
 
     func testDeferredData() throws {
-        let params = JSONParameters(Test(name: "test"))
-        XCTAssertNil(params.data)
-        XCTAssertNotNil(try params.getData())
-        XCTAssertEqual(params.data, "{\"name\":\"test\"}".data(using: .utf8))
+        let body = try JSONBody(Test(name: "test"))
+        XCTAssertEqual(body.data, "{\"name\":\"test\"}".data(using: .utf8))
     }
 
 }

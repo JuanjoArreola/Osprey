@@ -8,8 +8,8 @@
 import XCTest
 import Osprey
 
-class RouteTests: XCTestCase, BaseAPI {
-    
+class RouteTests: XCTestCase, RestAPI {
+    var resource: String = ""
     let baseURL = "http://localhost:8000/"
 
     override func setUpWithError() throws {
@@ -33,22 +33,19 @@ class RouteTests: XCTestCase, BaseAPI {
     
     func testGetEndpoint() throws {
         let route = get(endpoint: "service/")
-        let params = URLParameters(["foo": "bar"])
-        let url = try route.getURL(with: params)
+        let url = try route.getURL(with: ["foo": "bar"])
         XCTAssertEqual(url.absoluteString, "http://localhost:8000/service/?foo=bar")
     }
     
     func testGet() throws {
         let route = Route.get(baseURL)
-        let params = URLParameters(["foo": "bar"])
-        let url = try route.getURL(with: params)
+        let url = try route.getURL(with: ["foo": "bar"])
         XCTAssertEqual(url.absoluteString, "http://localhost:8000/?foo=bar")
     }
     
     func testPost() throws {
         let route = Route.post(baseURL)
-        let params = URLParameters(["foo": "bar", "1": "one"])
-        let url = try route.getURL(with: params)
+        let url = try route.getURL(with: ["foo": "bar", "1": "one"])
         XCTAssertTrue(url.absoluteString == "http://localhost:8000/?foo=bar&1=one" ||
             url.absoluteString == "http://localhost:8000/?1=one&foo=bar")
     }

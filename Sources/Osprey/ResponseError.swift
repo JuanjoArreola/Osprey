@@ -11,5 +11,4 @@ public enum ResponseError: Error {
     case httpError(statusCode: Int, content: Data?)
     case notFound(url: URL)
     case invalidDate(string: String)
-    case emptyResponse
 }

@@ -7,15 +7,22 @@
 
 import Foundation
 
-public protocol RequestParameters: class {
-    var urlParameters: URLQueryConvertible? { get }
-    var headers: [String: String] { get set }
-    var requiresAuthentication: Bool { get }
+public struct RequestParameters {
+    public enum Authentication {
+        case none
+        case required
+        case sendIfAvailable
+    }
     
-    func getData() throws -> Data?
-    func preprocess() throws
-}
-
-public extension RequestParameters {
-    func preprocess() throws {}
+    public var urlQuery: URLQueryConvertible? = nil
+    public var body: BodyConvertible? = nil
+    public var authentication: Authentication = .none
+    public var headers: [String: String] = [:]
+    
+    public init(urlQuery: URLQueryConvertible? = nil, body: BodyConvertible? = nil, authentication: RequestParameters.Authentication = .none, headers: [String : String] = [:]) {
+        self.urlQuery = urlQuery
+        self.body = body
+        self.authentication = authentication
+        self.headers = headers
+    }
 }

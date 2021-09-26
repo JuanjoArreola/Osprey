@@ -40,13 +40,11 @@ open class JSONParser: ResponseParser {
         return nil
     }
     
-    open func getInstance<T: Decodable>(from data: Data, response: URLResponse?) throws -> T {
+    open func getInstance<T: Decodable>(from data: Data, response: URLResponse) throws -> T {
         return try decoder.decode(T.self, from: data)
     }
     
-    open func getError(from data: Data?, response: URLResponse?) throws -> Error? {
-        return nil
-    }
+    open func parseError(from data: Data, response: URLResponse) throws {}
 }
 
 public protocol CustomDateParsing {

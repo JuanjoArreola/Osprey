@@ -1,24 +1,25 @@
-// swift-tools-version:5.2
-// The swift-tools-version declares the minimum version of Swift required to build this package.
+// swift-tools-version:5.5
 
 import PackageDescription
 
 let package = Package(
     name: "Osprey",
+    platforms: [
+        .macOS(.v12), .iOS(.v15), .tvOS(.v15), .watchOS(.v8)
+    ],
     products: [
         .library(
             name: "Osprey",
             targets: ["Osprey"]),
     ],
-    dependencies: [
-        .package(url: "https://github.com/JuanjoArreola/ShallowPromises", from: "0.7.1")
-    ],
+    dependencies: [],
     targets: [
         .target(
-            name: "Osprey",
-            dependencies: ["ShallowPromises"]),
+            name: "Osprey"
+        ),
         .testTarget(
             name: "OspreyTests",
             dependencies: ["Osprey"]),
-    ]
+    ],
+    swiftLanguageVersions: [.v5]
 )

@@ -13,10 +13,9 @@ open class HttpRequester {
     open var allowsCellularAccess: Bool?
     open var session: URLSession?
     
-    func request(route: Route, parameters: RequestParameters?, completion: @escaping (_ data: Data?, _ response: URLResponse?, _ error: Error?) -> Void) throws -> URLSessionDataTask {
-        try parameters?.preprocess()
-        var request = URLRequest(url: try route.getURL(with: parameters))
-        request.httpBody = try parameters?.getData()
+    func request(route: Route, parameters: RequestParameters?) async throws -> (Data, URLResponse) {
+        var request = URLRequest(url: try route.getURL(with: parameters?.urlQuery))
+        request.httpBody = parameters?.body?.data
         parameters?.headers.forEach({ request.addValue($0.value, forHTTPHeaderField: $0.key) })
         
         request.httpMethod = route.httpMethod
@@ -25,9 +24,6 @@ open class HttpRequester {
         request.allowsCellularAccess = allowsCellularAccess ?? request.allowsCellularAccess
         
         let session = self.session ?? URLSession.shared
-        let task = session.dataTask(with: request, completionHandler: completion)
-        task.resume()
-        
-        return task
+        return try await session.data(for: request)
     }
 }

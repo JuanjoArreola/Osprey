@@ -10,6 +10,6 @@ import Foundation
 public protocol ResponseParser {
     var acceptHeader: String? { get }
     
-    func getError(from data: Data?, response: URLResponse?) throws -> Error?
-    func getInstance<T: Decodable>(from data: Data, response: URLResponse?) throws -> T
+    func parseError(from data: Data, response: URLResponse) throws
+    func getInstance<T: Decodable>(from data: Data, response: URLResponse) throws -> T
 }

@@ -6,86 +6,52 @@
 //
 
 import Foundation
-import ShallowPromises
-
-extension URLSessionDataTask: Cancellable {}
-
-private let processingQueue = DispatchQueue(label: "com.osprey.ProcessingQueue", attributes: .concurrent)
 
 open class AbstractAPI {
     
     public let responseParser: ResponseParser
-    open var responseQueue = DispatchQueue.main
     var requester = HttpRequester()
     
     public init(responseParser: ResponseParser) {
         self.responseParser = responseParser
     }
     
-    open func request<T: Decodable>(route: Route, parameters: RequestParameters? = nil) -> Promise<T> {
-        let promise = Promise<T>()
-        processingQueue.async {
-            do {
-                try self.preprocess(route: route, parameters: parameters)
-                promise.littlePromise = try self.requester.request(route: route, parameters: parameters,
-                                                         completion: self.parseClosure(for: promise))
-            } catch {
-                promise.complete(with: error, in: self.responseQueue)
-            }
-        }
-        return promise
-    }
-    
-    func parseClosure<T: Decodable>(for promise: Promise<T>) -> ((Data?, URLResponse?, Error?) -> Void) {
-        return { (data, response, error) in
-            do {
-                if let error = try self.parseError(data: data, response: response, error: error) {
-                    promise.complete(with: error, in: self.responseQueue)
-                } else if let data = data {
-                    let result: T = try self.responseParser.getInstance(from: data, response: response)
-                    promise.fulfill(with: result, in: self.responseQueue)
-                } else {
-                    promise.complete(with: ResponseError.emptyResponse, in: self.responseQueue)
-                }
-            } catch {
-                promise.complete(with: error, in: self.responseQueue)
-            }
-        }
+    open func request<T: Decodable>(route: Route, parameters: RequestParameters? = nil) async throws -> T {
+        var params = parameters ?? RequestParameters()
+        try processParameters(&params, route: route)
+        let (data, response) = try await requester.request(route: route, parameters: params)
+        try parseError(data: data, response: response)
+        return try responseParser.getInstance(from: data, response: response)
     }
     
     // MARK: - Parse error
     
-    public func parseError(data: Data?, response: URLResponse?, error: Error?) throws -> Error? {
-        if let error = error {
-            return error
+    public func parseError(data: Data, response: URLResponse) throws {
+        guard let code = (response as? HTTPURLResponse)?.statusCode, !(200..<400).contains(code) else {
+            return
         }
-        if let code = (response as? HTTPURLResponse)?.statusCode, !(200..<400).contains(code) {
-            if let data = data, let error = try responseParser.getError(from: data, response: response) {
-                return error
-            }
-            if let error = parseError(code: code, data: data, response: response) {
-                return error
-            }
-            return ResponseError.httpError(statusCode: code, content: data)
-        }
-        return nil
+        try responseParser.parseError(from: data, response: response)
+        try parseError(code: code, data: data, response: response)
+        throw ResponseError.httpError(statusCode: code, content: data)
     }
     
-    open func parseError(code: Int, data: Data?, response: URLResponse?) -> Error? {
+    open func parseError(code: Int, data: Data, response: URLResponse) throws {
         switch code {
         case 404:
-            if let url = response?.url {
-                return ResponseError.notFound(url: url)
+            if let url = response.url {
+                throw ResponseError.notFound(url: url)
             }
-            return nil
         default:
-            return nil
+            return
         }
     }
     
-    open func preprocess(route: Route, parameters: RequestParameters? = nil) throws {
-        if let params = parameters, let header = responseParser.acceptHeader {
-            params.headers["Accept"] = header
+    open func processParameters(_ parameters: inout RequestParameters, route: Route) throws {
+        if let header = responseParser.acceptHeader {
+            parameters.headers["Accept"] = header
+        }
+        if let headers = parameters.body?.headers {
+            parameters.headers.merge(headers, uniquingKeysWith: { (_, new) in new })
         }
     }
 }
