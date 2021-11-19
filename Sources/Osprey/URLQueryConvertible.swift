@@ -54,6 +54,10 @@ extension CustomStringConvertible where Self: URLQueryValueConvertible {
 public struct URLQuery: URLQueryConvertible {
     public var array = [URLQueryConvertible]()
     
+    public init(_ elements: [URLQueryConvertible?]) {
+        array.append(contentsOf: elements.compactMap({ $0 }))
+    }
+    
     public init(_ elements: URLQueryConvertible?...) {
         array.append(contentsOf: elements.compactMap({ $0 }))
     }
