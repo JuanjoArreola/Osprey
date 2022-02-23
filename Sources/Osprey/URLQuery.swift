@@ -14,6 +14,10 @@ public struct URLQuery: URLQueryConvertible {
         array.append(contentsOf: elements.compactMap({ $0 }))
     }
     
+    public init(_ elements: [URLQueryConvertible?]) {
+        array.append(contentsOf: elements.compactMap({ $0 }))
+    }
+    
     public mutating func add(_ element: URLQueryConvertible?) {
         if let element = element {
             array.append(element)
