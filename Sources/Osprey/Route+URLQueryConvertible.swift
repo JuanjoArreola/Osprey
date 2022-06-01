@@ -22,10 +22,7 @@ public extension URL {
         guard var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
             throw RoutingError.encodingError
         }
-        guard let query = query.urlQuery.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
-            throw RoutingError.invalidURLQuery
-        }
-        components.percentEncodedQuery = components.percentEncodedQuery?.appending("&" + query) ?? query
+        components.percentEncodedQuery = components.percentEncodedQuery?.appending("&" + query.urlQuery) ?? query.urlQuery
         if let url = components.url {
             return url
         }

@@ -24,7 +24,7 @@ import Foundation
 ///         }
 ///     }
 /// Calling `addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)` on
-/// the return value is discouraged since later methods will call it before sending
+/// the return value is advised depending on the case, since later methods won't call it before sending
 /// the request.
 public protocol URLQueryConvertible {
     var urlQuery: String { get }
