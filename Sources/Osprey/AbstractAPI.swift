@@ -24,6 +24,13 @@ open class AbstractAPI {
         return try responseParser.getInstance(from: data, response: response)
     }
     
+    open func request(route: Route, parameters: RequestParameters? = nil) async throws {
+        var params = parameters ?? RequestParameters()
+        try processParameters(&params, route: route)
+        let (data, response) = try await requester.request(route: route, parameters: params)
+        try parseError(data: data, response: response)
+    }
+    
     // MARK: - Parse error
     
     public func parseError(data: Data, response: URLResponse) throws {
