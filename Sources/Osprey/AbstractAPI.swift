@@ -10,7 +10,15 @@ import Foundation
 open class AbstractAPI {
     
     public let responseParser: ResponseParser
-    var requester = HttpRequester()
+    public var requester: HttpRequester = {
+        var requester = HttpRequester()
+        let config = URLSessionConfiguration.default
+        config.requestCachePolicy = .reloadIgnoringLocalCacheData
+        config.urlCache = nil
+        requester.session = URLSession(configuration: config)
+        
+        return requester
+    }()
     
     public init(responseParser: ResponseParser) {
         self.responseParser = responseParser
